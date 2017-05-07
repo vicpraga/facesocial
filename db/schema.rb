@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170501150523) do
+ActiveRecord::Schema.define(version: 20170504215134) do
 
   create_table "likes", force: :cascade do |t|
     t.string   "message"
@@ -37,6 +37,16 @@ ActiveRecord::Schema.define(version: 20170501150523) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "shareds", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "message_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "shareds", ["message_id"], name: "index_shareds_on_message_id"
+  add_index "shareds", ["user_id"], name: "index_shareds_on_user_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "name"
