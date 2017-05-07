@@ -30,11 +30,23 @@ class LikesController < ApplicationController
     @like.message = Message.find(@message_id)
     @like.user = User.find(@user_id)
     @like2 = Like.find_by(message_id: @message_id, user_id: @user_id)
+    @notification = Notification.new
+    @notification.receiver = @like.message.user
+    @notification.message = @like.message
+    @notification.notificationType = "A user has given a like"
+    @notification.sender = @like.user
+    @notification2 = Notification.find_by(sender_id: @notification.sender.id, receiver_id: @notification.receiver.id, message_id: @notification.message.id)
+    if @notification2 != nil
+      @notification2.delete
+    end    
 
     if @like2 == nil
 
         respond_to do |format|
         if @like.save
+          if @notification.sender.name != @notification.receiver.name
+            @notification.save
+          end
           format.html { redirect_to root_path, notice: 'Like was successfully created.' }
           format.json { render :show, status: :created, location: @like }
         else

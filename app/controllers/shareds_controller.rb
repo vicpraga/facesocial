@@ -35,8 +35,18 @@ class SharedsController < ApplicationController
     @messageShared = Message.new
     @messageShared.texto=@shared.message.texto
     @messageShared.user = User.find(@user_id)
-
     @messageShared2 = Message.find_by(texto: @messageShared.texto, user_id:@user_id)
+
+    @notification = Notification.new
+    @notification.sender = @shared.user
+    @notification.receiver = @shared.message.user
+    @notification.message = @shared.message
+    @notification.notificationType = "A user shared a post"
+
+    @notification2 = Notification.find_by(sender_id: @notification.sender.id, receiver_id: @notification.receiver.id, message_id: @notification.message.id)
+    if @notification2 != nil
+      @notification2.delete
+    end 
 
     if @shared2 == nil
       respond_to do |format|     

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170504215134) do
+ActiveRecord::Schema.define(version: 20170507090049) do
 
   create_table "likes", force: :cascade do |t|
     t.string   "message"
@@ -33,6 +33,20 @@ ActiveRecord::Schema.define(version: 20170504215134) do
 
   add_index "messages", ["user_id"], name: "index_messages_on_user_id"
 
+  create_table "notifications", force: :cascade do |t|
+    t.integer  "sender_id"
+    t.integer  "receiver_id"
+    t.integer  "message_id"
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.string   "notificationType"
+    t.boolean  "visto",            default: false
+  end
+
+  add_index "notifications", ["message_id"], name: "index_notifications_on_message_id"
+  add_index "notifications", ["receiver_id"], name: "index_notifications_on_receiver_id"
+  add_index "notifications", ["sender_id"], name: "index_notifications_on_sender_id"
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -51,9 +65,9 @@ ActiveRecord::Schema.define(version: 20170504215134) do
   create_table "users", force: :cascade do |t|
     t.string   "name"
     t.string   "password"
-    t.boolean  "admin"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.boolean  "admin",      default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
 end
