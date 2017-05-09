@@ -1,7 +1,5 @@
-<% @user = User.find_by(name: session[:user]) 
-if @user == nil
-
-%>
+<% @user = User.find_by(name: session[:user]) %>
+<% if session[:user] == nil %>
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 	<div class="container">
 		<%= link_to "FaceSocial", root_path, class: "navbar-brand"%>
@@ -49,7 +47,6 @@ if @user == nil
     </div>
   </div>
 </nav>
-
 <%end%>
 <%= render 'form' %>
 

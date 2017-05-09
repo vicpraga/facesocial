@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170507090049) do
+ActiveRecord::Schema.define(version: 20170509071957) do
+
+  create_table "friends", force: :cascade do |t|
+    t.integer  "userA_id"
+    t.integer  "userB_id"
+    t.boolean  "estado",     default: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "friends", ["userA_id"], name: "index_friends_on_userA_id"
+  add_index "friends", ["userB_id"], name: "index_friends_on_userB_id"
 
   create_table "likes", force: :cascade do |t|
     t.string   "message"

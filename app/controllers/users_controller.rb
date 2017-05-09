@@ -4,7 +4,16 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    if !session[:user]
+      redirect_to new_user_path
+    else
+      @user = User.find_by(name: session[:user])
+      if (@user.admin == true)
+        @users = User.all
+      else 
+        redirect_to root_path
+      end
+    end
   end
 
   # GET /users/1
@@ -19,6 +28,7 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    @user_edit = User.find_by(id: @user.id)
   end
 
   # POST /users
@@ -55,11 +65,45 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    @user.destroy
-    respond_to do |format|
-      format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
-      format.json { head :no_content }
+    @messages = Message.where(user_id: @user.id)
+    @messages.each do |message|
+      message.destroy
+    end 
+    @likes = Like.where(user_id: @user.id)
+    @likes.each do |like|
+      like.destroy
     end
+
+    @shareds = Shared.where(user_id: @user.id)
+    @shareds.each do |shared|
+      shared.destroy
+    end
+    @nots_sender = Notification.where(sender_id: @user.id)
+    @nots_receiver = Notification.where(receiver_id: @user.id)
+
+    @nots_sender.each do |sender|
+      sender.destroy
+    end
+
+   @nots_receiver.each do |receiver|
+      receiver.destroy
+    end
+
+    if @user.name == sessin[:user]
+        @user.destroy
+        session[:user] = nil
+        respond_to do |format|
+          format.html { redirect_to new_user_path, notice: 'User was successfully destroyed.' }
+          format.json { head :no_content }
+        end
+    else
+      @user.destroy
+      respond_to do |format|
+        format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
+        format.json { head :no_content }
+      end
+    end
+  
   end
 
   private
