@@ -40,7 +40,7 @@ class UsersController < ApplicationController
       redirect_to new_user_path, :notice => "The username already exists"
     else
       if @user.save
-        redirect_to messages_path, :notice => "Signed up!"
+        redirect_to messages_path, :notice => "User was successfully created."
       else
         render :new
       end

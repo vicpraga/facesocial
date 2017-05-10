@@ -7,7 +7,27 @@ class MessagesController < ApplicationController
     if !session[:user]
       redirect_to new_session_path
     else
-      @messages = Message.all     
+      @user = User.find_by(name: session[:user])
+      @friends = Friend.where("(userA_id = ? or userB_id = ?) and estado = ?",@user.id,@user.id,true)
+      @messages = []
+      @friends.each do |friend|
+        if friend.userA.name == session[:user]
+          @messages_aux = Message.where("user_id = ?", friend.userB.id)
+          if @messages_aux != nil
+            @messages.concat(@messages_aux)
+          end
+        else
+          @messages_aux = Message.where("user_id = ?", friend.userA.id)
+          if @messages_aux != nil
+            @messages.concat(@messages_aux)
+          end
+        end
+      end    
+      @messages_aux = Message.where("user_id = ? ",@user.id)
+      if @messages_aux != nil
+        @messages.concat(@messages_aux)
+      end
+
     end
   end
 

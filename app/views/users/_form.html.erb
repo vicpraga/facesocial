@@ -12,6 +12,12 @@
   <% end %>
 
 <div class="login">
+<% if request.path == "/users/new"  %>
+  <% @user2 = User.new %>
+  <% @user = User.find_by(name: session[:user]) %>
+<% else %>
+<% @user = User.find_by(name: session[:user]) %>
+<% end %>
 <h2>User</h2>
 
   <div class="field">
@@ -24,13 +30,15 @@
     <%= f.password_field :password %>
   </div>
 
-  <div class="field">
+<% if session[:user] && @user.admin ==true %>
+  
+   <div class="field">
     <%= f.label :admin %><br>
     <%= f.check_box :admin %>
   </div>
-
+<% end %>
   <div class="actions">
     <%= f.submit %>
   </div>
 </div>
-<% end %>
+<%end%>
