@@ -1,3 +1,4 @@
+<% @user_sesion = User.find_by(name: session[:user]) %>
 <div class="container">
 <div class="panel panel-default">
 
@@ -12,7 +13,7 @@
 
   <tbody>
   <% @users.each do |user|
-      @request = Friend.where("userA_id = ? or userB_id = ?",user.id, user.id) %>
+      @request = Friend.where("(userA_id = ? and userB_id = ?) or (userA_id = ? and userB_id = ?)",@user_sesion.id, user.id , user.id , @user_sesion.id) %>
       <% if session[:user] != user.name %>
         <tr>
           <td style="text-align: center;"><%= user.name %></td>
@@ -22,10 +23,12 @@
             <%= link_to " Friend request", friends_path(@friend, :friend => {:userA_id => @user.id, :userB_id => user.id, :estado => false}), :method => :post, class: "fa fa-user-plus btn btn-success" %>
           <%else%>
              <% @request.each do |peticion| %>
-                <% if peticion.estado == true %>
+                <% if peticion.estado == true && (peticion.userA_id == @user_sesion.id || peticion.userB_id == @user_sesion.id)  %>
                   <%= link_to " Delete friend", peticion, method: :delete, data: {confirm: 'Are you sure?'},class: "fa fa-trash-o btn btn-danger" %>
                 <% else %>
+                    <% if @user_sesion.id != peticion.userA_id %>
                     <%= link_to " Accept", friend_path(peticion, :friend => {:estado => true}), :method => :put, class: "fa fa-check btn btn-success" %>
+                    <% end%>
                     <%= link_to " Cancel", peticion, method: :delete, class: "fa fa-times btn btn-danger" %>
                 <% end %>
             <%end%>
@@ -36,7 +39,41 @@
   <%end%>
   </tbody>
 </table>
-
 </div>
+
+<% if @all_friends.size > 0 && @user_sesion.admin==true%>
+  
+<div class="panel panel-default">
+
+  <div class="panel-heading"><h1>Listing People</h1></div>
+  <table class="table">
+  <thead>
+    <tr>
+      <th style="text-align: center;">User A</th>
+      <th style="text-align: center;">User B</th>
+      <th style="text-align: center;">State</th>
+      <th style="text-align: center;">Created at</th>
+    </tr>
+  </thead>
+
+  <tbody>
+      <% @all_friends.each do |all_friend|
+      @userA = User.find(all_friend.userA_id)
+      @userB = User.find(all_friend.userB_id)
+     %>
+      <tr>
+        <td style="text-align: center;"><%= @userA.name %></td>
+        <td style="text-align: center;"><%= @userB.name %></td>
+        <td style="text-align: center;"><%= all_friend.estado %></td>
+        <td style="text-align: center;"><%= all_friend.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+</div>
+
+
+
+<%end%>
 </div>
 

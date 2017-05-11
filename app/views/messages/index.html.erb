@@ -13,14 +13,15 @@
         @likes = Like.where(message_id: message.id)
         @shareds = Shared.where(message_id: message.id)
       %>
-      <%if @shared_aux!=nil %><div id="messageShared"><%else%> <div id="message" class="row"><%end%>
-      <div class="col-xs-12">
+      <%if @shared_aux!=nil %><div id="messageShared"><%else%> <div id="message"><%end%>
         <div class="messager-user">
           <i style="color:black;" class="fa fa-user" aria-hidden="true"></i> <%= message.user.name %>
         </div>
         <p>Message:</p>
         <div class="message-content">
+             <%= image_tag @aux.message.avatar.url(:thumb) %>
              <%= message.texto %>
+
         </div>
         <br>
         <div class="actions-message">
@@ -99,5 +100,4 @@
         </div>
       </div>
       <%end%>
-    </div>  
 </div>

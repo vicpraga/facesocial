@@ -7,6 +7,7 @@ class FriendsController < ApplicationController
     #@friends = Friend.all
     @users = User.all
     @user = User.find_by(name: session[:user])
+    @all_friends = Friend.all
   end
 
   # GET /friends/1

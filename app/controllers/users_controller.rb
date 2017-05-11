@@ -89,7 +89,7 @@ class UsersController < ApplicationController
       receiver.destroy
     end
 
-    if @user.name == sessin[:user]
+    if @user.name == session[:user]
         @user.destroy
         session[:user] = nil
         respond_to do |format|
